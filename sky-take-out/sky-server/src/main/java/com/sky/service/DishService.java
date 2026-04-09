@@ -29,4 +29,6 @@ public interface DishService  {
 
     //根据ID修改菜品基本信息和对应的口味信息
     void updateWithFlavor(DishDTO dishDTO);
+
+    List<DishVO> listWithFlavor(Long categoryId);
 }

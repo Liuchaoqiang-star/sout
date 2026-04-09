@@ -24,10 +24,6 @@ public class DishController {
     @Autowired
     private DishService dishService;
 
-
-
-
-
     @PostMapping
     @ApiOperation("新增菜品")
     public Result save(@RequestBody DishDTO dishDTO) {
@@ -65,11 +61,11 @@ public class DishController {
         dishService.updateWithFlavor(dishDTO); // 补全入参
         return Result.success();
     }
-
-
-
-
-
-
+    @GetMapping("/list")
+    public Result<List<DishVO>> list(Long categoryId) {
+        log.info("根据分类id查询菜品：{}", categoryId);
+        List<DishVO> list = dishService.listWithFlavor(categoryId); // 这里的 service 方法名要跟你写的一致
+        return Result.success(list);
+    }
 
 }

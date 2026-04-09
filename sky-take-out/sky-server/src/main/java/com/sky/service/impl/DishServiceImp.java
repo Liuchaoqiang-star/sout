@@ -132,4 +132,12 @@ public class DishServiceImp implements DishService {
 
     }
 
+    @Override
+    // DishServiceImpl.java
+    public List<DishVO> listWithFlavor(Long categoryId) {
+        Dish dish = new Dish();
+        dish.setCategoryId(categoryId);
+        dish.setStatus(1); // 只查起售中的
+        return dishMapper.list(dish); // 调用 mapper 的 list 方法
+    }
 }
