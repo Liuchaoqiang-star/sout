@@ -52,4 +52,21 @@ public class SetmealController {
         return Result.success();
     }
 
+
+
+    @PutMapping
+    @ApiOperation("修改套餐")
+    public Result update(@RequestBody SetmealDTO setmealDTO) {
+        log.info("修改套餐：{}", setmealDTO);
+        setmealService.updateWithDish(setmealDTO); // 这里的名字你可以自己起
+        return Result.success();
+    }
+
+
+
+
+
+
+
+
 }

@@ -15,4 +15,6 @@ public interface SetmealService {
 
 
     void saveWithDish(SetmealDTO setmealDTO);
+
+    void updateWithDish(SetmealDTO setmealDTO);
 }
