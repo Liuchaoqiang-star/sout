@@ -6,6 +6,7 @@ import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
@@ -33,6 +34,37 @@ public class SetmealServiceImpl implements SetmealService {
 
     @Autowired
     private SetmealDishMapper setmealDishMapper; // 注意是小写开头的变量名
+
+    @Override
+    @Transactional
+    public void deleteBatch(List<Long> ids) {
+        //根据ids去数据库去查询，是不是在起售卖中
+        for (Long id : ids) {
+            Setmeal setmeal=setmealMapper.getById(id);
+            if(setmeal.getStatus()==1){
+                throw new DeletionNotAllowedException("起售中的泰餐不能删除哦！");
+            }
+
+        }
+        //没什么问题就删除套餐
+        setmealMapper.deleteByIdBatch(ids);
+        //删除菜品关系
+        setmealDishMapper.deleteBySetmealIds(ids);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO) {

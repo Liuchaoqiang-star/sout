@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController//1. 必须加，标识这是一个控制器并返回JSON
 @RequestMapping("/admin/setmeal")//2.类级别路径映射，这一块所有的接口都以这个开头
@@ -21,12 +23,16 @@ public class SetmealController {
     @Autowired
     private SetmealService setmealService;
 
+
+
     @PostMapping   //添加套餐
     public Result save(@RequestBody SetmealDTO setmealDTO) {
         log.info("添加套餐");
         setmealService.saveWithDish(setmealDTO);
         return Result.success();
     }
+
+
     @GetMapping("/page")
     @ApiOperation("进行分也查询套餐")
     public Result<PageResult> page(SetmealPageQueryDTO setmealPageQueryDTO) {
@@ -36,11 +42,14 @@ public class SetmealController {
         PageResult pageResult =setmealService.pageQuery(setmealPageQueryDTO);
         // 3. 返回 Result.success(pageResult)
         return Result.success(pageResult);
-
     }
 
-
-
-
+    @DeleteMapping()
+    @ApiOperation("批量删除套餐")
+    public Result delete(@RequestParam List<Long> ids){
+        log.info("批量删除套餐{}",ids);
+        setmealService.deleteBatch(ids);
+        return Result.success();
+    }
 
 }
