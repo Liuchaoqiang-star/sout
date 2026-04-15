@@ -4,9 +4,11 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.dto.SetmealDTO;
 import com.sky.dto.SetmealPageQueryDTO;
+import com.sky.entity.Dish;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.DeletionNotAllowedException;
+import com.sky.exception.SetmealEnableFailedException;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
@@ -133,19 +135,37 @@ public class SetmealServiceImpl implements SetmealService {
             });
             setmealDishMapper.insertBatch(setmealDishes); // 刚才写过批量插入逻辑吧？复用它！
         }
+    }
 
 
 
 
 
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        if (status == 1) {
+            // 【关键逻辑】起售套餐时，得看看它包含的菜品有没有被停售的
+            // 1. 根据套餐id查询关联的菜品
+            List<SetmealDish> setmealDishes = setmealDishMapper.getBySetmealId(id);
+            // 2. 遍历菜品，查菜品表看状态
+            if (setmealDishes != null && setmealDishes.size() > 0) {
+                setmealDishes.forEach(setmealDish -> {
+                    Dish dish = dishMapper.getById(setmealDish.getDishId());
+                    if (dish.getStatus() == 0) {//0代表菜品停售卖
+                        //如果有一个菜品没开，这套餐就不能启售
+                        throw new SetmealEnableFailedException("套餐内包含未起售菜品，无法起售哦！");
+                    }
+                });
+            }
 
-
-
-
-
-
-
-
+        }
+        //情况二：停售 (status == 0) 或者 起售校验通过后
+        // 统一执行修改状态的操作
+        Setmeal setmeal = Setmeal.builder()
+                .id(id)
+                .status(status)
+                .build();
+        setmealMapper.update(setmeal);
     }
 }
 
