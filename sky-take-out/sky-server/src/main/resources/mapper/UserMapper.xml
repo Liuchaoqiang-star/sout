@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.UserMapper">
+
+    <!--
+        根据openid查询用户。
+        openid是微信用户在当前小程序下的唯一标识，用它判断用户是否已经注册。
+    -->
+    <select id="getByOpenid" resultType="com.sky.entity.User">
+        select * from user where openid = #{openid}
+    </select>
+
+    <!--
+        新增C端用户。
+        useGeneratedKeys会把数据库自增生成的id回填到User对象中，
+        Controller生成JWT时需要用这个id作为用户身份。
+    -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into user
+            (openid, name, phone, sex, id_number, avatar, create_time)
+        values
+            (#{openid}, #{name}, #{phone}, #{sex}, #{idNumber}, #{avatar}, #{createTime})
+    </insert>
+</mapper>
