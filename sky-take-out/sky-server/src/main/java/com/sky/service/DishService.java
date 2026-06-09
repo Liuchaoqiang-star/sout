@@ -30,5 +30,8 @@ public interface DishService  {
     //根据ID修改菜品基本信息和对应的口味信息
     void updateWithFlavor(DishDTO dishDTO);
 
+    // 根据菜品id批量查询分类id，用于精确清理缓存
+    List<Long> getCategoryIdsByIds(List<Long> ids);
+
     List<DishVO> listWithFlavor(Long categoryId);
 }
